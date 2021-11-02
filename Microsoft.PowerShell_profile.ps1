@@ -726,3 +726,4 @@ function Open-GitWeb {
 ."C:\scripts\setallaliases.ps1"
 
 ls
+#C:\Scripts\Selenium\run.ps1
