@@ -6,9 +6,9 @@ if ($host.Name -eq 'ConsoleHost')
     Import-Module PSReadLine
 }
 Import-Module -Name Terminal-Icons
-set-alias desktop "Desktop.ps1"
+$user = 'C:\Users\Jamiro Ferrara'
 
-oh-my-posh --init --shell pwsh --config "C:\Users\Jamiro Ferrara\AppData\Local\Programs\oh-my-posh\themes\ohmyposhv3-v2.json" | Invoke-Expression
+oh-my-posh --init --shell pwsh --config '.\AppData\Local\Programs\oh-my-posh\themes\ohmyposhv3-v2.json' | Invoke-Expression
 
 
 Register-ArgumentCompleter -Native -CommandName winget -ScriptBlock {
@@ -723,7 +723,64 @@ function Open-GitWeb {
     }
 }
 
+filter Get-FileSize {
+    "{0:N2} {1}" -f $(
+    if ($_ -lt 1kb) { $_, 'Bytes' }
+    elseif ($_ -lt 1mb) { ($_/1kb), 'KB' }
+    elseif ($_ -lt 1gb) { ($_/1mb), 'MB' }
+    elseif ($_ -lt 1tb) { ($_/1gb), 'GB' }
+    elseif ($_ -lt 1pb) { ($_/1tb), 'TB' }
+    else { ($_/1pb), 'PB' }
+    )
+}
+
+function Get-ESSearchResult {
+    [CmdletBinding()]
+    [Alias("sr")]
+    Param
+    (
+        #searchterm
+        [Parameter(Mandatory=$true, Position=0)]
+        $SearchTerm,
+        #openitem
+        [switch]$OpenItem,
+        [switch]$CopyFullPath,
+        [switch]$OpenFolder,
+        [switch]$AsObject
+    )
+    $esPath = 'C:\Program Files*\es\es.exe'
+    if (!(Test-Path (Resolve-Path $esPath).Path)){
+        Write-Warning "Everything commandline es.exe could not be found on the system please download and install via http://www.voidtools.com/es.zip"
+    }
+    $result = & (Resolve-Path $esPath).Path $(Get-Location) $SearchTerm
+    echo $result
+}
+
+function Open-ESSearchResult {
+    [CmdletBinding()]
+    [Alias("or")]
+    Param
+    (
+        #searchterm
+        [Parameter(Mandatory=$true, Position=0)]
+        $SearchTerm,
+        #openitem
+        [switch]$OpenItem,
+        [switch]$CopyFullPath,
+        [switch]$OpenFolder,
+        [switch]$AsObject
+    )
+    $esPath = 'C:\Program Files*\es\es.exe'
+    if (!(Test-Path (Resolve-Path $esPath).Path)){
+        Write-Warning "Everything commandline es.exe could not be found on the system please download and install via http://www.voidtools.com/es.zip"
+    }
+    $result = & (Resolve-Path $esPath).Path $(Get-Location) $SearchTerm
+    ii $result
+}
+
+#."C:\scripts\functions\testmenu.ps1"
+
+#Aliases 
 ."C:\scripts\setallaliases.ps1"
 
-ls
-#C:\Scripts\Selenium\run.ps1
+h
