@@ -709,7 +709,7 @@ Function search-lucky {
         start "$url"
 }
 
-function Open-GitWeb {
+Function Open-GitWeb {
     $r = git remote -v | Select-String -Pattern "(https:\/\/|git@)(?<git>.*)\.git"
     if ($r.Matches.Length -gt 0) {
         $t = "https://" + ($r.Matches[0].Groups |
@@ -734,9 +734,9 @@ filter Get-FileSize {
     )
 }
 
-function Get-ESSearchResult {
+Function Get-ESSearchResult {
     [CmdletBinding()]
-    [Alias("sr")]
+    [Alias("s")]
     Param
     (
         #searchterm
@@ -756,7 +756,29 @@ function Get-ESSearchResult {
     echo $result
 }
 
-function Open-ESSearchResult {
+Function Get-ESGlobalSearchResult {
+    [CmdletBinding()]
+    [Alias("gs")]
+    Param
+    (
+        #searchterm
+        [Parameter(Mandatory=$true, Position=0)]
+        $SearchTerm,
+        #openitem
+        [switch]$OpenItem,
+        [switch]$CopyFullPath,
+        [switch]$OpenFolder,
+        [switch]$AsObject
+    )
+    $esPath = 'C:\Program Files*\es\es.exe'
+    if (!(Test-Path (Resolve-Path $esPath).Path)){
+        Write-Warning "Everything commandline es.exe could not be found on the system please download and install via http://www.voidtools.com/es.zip"
+    }
+    $result = & (Resolve-Path $esPath).Path $SearchTerm
+    echo $result
+}
+
+Function Open-ESSearchResult {
     [CmdletBinding()]
     [Alias("or")]
     Param
@@ -777,8 +799,6 @@ function Open-ESSearchResult {
     $result = & (Resolve-Path $esPath).Path $(Get-Location) $SearchTerm
     ii $result
 }
-
-#."C:\scripts\functions\testmenu.ps1"
 
 #Aliases 
 ."C:\scripts\setallaliases.ps1"
