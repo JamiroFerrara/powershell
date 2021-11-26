@@ -6,6 +6,7 @@ if ($host.Name -eq 'ConsoleHost')
     Import-Module PSReadLine
 }
 Import-Module -Name Terminal-Icons
+
 $user = 'C:\Users\Jamiro Ferrara'
 
 oh-my-posh --init --shell pwsh --config '.\AppData\Local\Programs\oh-my-posh\themes\ohmyposhv3-v2.json' | Invoke-Expression
@@ -28,6 +29,12 @@ Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
             [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
          }
  }
+
+
+Set-Executionpolicy remotesigned -Scope CurrentUser
+Import-Module cmatrix
+Set-ScreenSaverTimeout -Seconds 25
+Enable-ScreenSaver
 
 # ---
 
@@ -803,4 +810,3 @@ Function Open-ESSearchResult {
 #Aliases 
 ."C:\scripts\setallaliases.ps1"
 
-h
