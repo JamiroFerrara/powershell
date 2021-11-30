@@ -810,3 +810,4 @@ Function Open-ESSearchResult {
 #Aliases 
 ."C:\scripts\setallaliases.ps1"
 
+clear
