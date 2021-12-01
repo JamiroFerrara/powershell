@@ -33,7 +33,7 @@ Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
 
 Set-Executionpolicy remotesigned -Scope CurrentUser
 Import-Module cmatrix
-Set-ScreenSaverTimeout -Seconds 25
+Set-ScreenSaverTimeout -Seconds 120
 Enable-ScreenSaver
 
 # ---
