@@ -9,8 +9,7 @@ Import-Module -Name Terminal-Icons
 
 $user = 'C:\Users\Jamiro Ferrara'
 
-oh-my-posh --init --shell pwsh --config '.\AppData\Local\Programs\oh-my-posh\themes\ohmyposhv3-v2.json' | Invoke-Expression
-
+oh-my-posh --init --shell pwsh --config 'C:\Users\Jamiro Ferrara\AppData\Local\Programs\oh-my-posh\themes\ohmyposhv3-v2.json' | Invoke-Expression
 
 Register-ArgumentCompleter -Native -CommandName winget -ScriptBlock {
     param($wordToComplete, $commandAst, $cursorPosition)
@@ -674,7 +673,7 @@ Set-PSReadLineKeyHandler -Key Alt+a `
 
 Set-PSReadLineOption -PredictionSource History
 Set-PSReadLineOption -PredictionViewStyle ListView
-Set-PSReadLineOption -EditMode Windows
+Set-PSReadlineOption -EditMode Window
 Set-PSReadLineKeyHandler -Chord "Ctrl+Enter" -Function NextHistory
 
 # This is an example of a macro that you might use to execute a command.
@@ -696,6 +695,38 @@ Set-PSReadLineKeyHandler -Key Ctrl+Shift+t `
     [Microsoft.PowerShell.PSConsoleReadLine]::Insert("dotnet test")
     [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
 }
+
+Set-PsReadLineKeyHandler -Chord "C" `
+                         -ScriptBlock {
+    [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+    [Microsoft.PowerShell.PSConsoleReadLine]::Insert("c ")
+    [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+}
+
+Set-PsReadLineKeyHandler -Chord "V" `
+                         -ScriptBlock {
+    [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+    [Microsoft.PowerShell.PSConsoleReadLine]::Insert("v ")
+    [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+}
+
+Set-PsReadLineKeyHandler -Chord "X" `
+                         -ScriptBlock {
+    [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+    [Microsoft.PowerShell.PSConsoleReadLine]::Insert("fcdr ")
+    [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+}
+
+function OnViModeChange {
+    if ($args[0] -eq 'Command') {
+        # Set the cursor to a blinking block.
+        Write-Host -NoNewLine "`e[1 q"
+    } else {
+        # Set the cursor to a blinking line.
+        Write-Host -NoNewLine "`e[5 q"
+    }
+}
+Set-PSReadLineOption -ViModeIndicator Script -ViModeChangeHandler $Function:OnViModeChange
 
 Function search-google {
         $query = 'https://www.google.com/search?q='
@@ -807,7 +838,13 @@ Function Open-ESSearchResult {
     ii $result
 }
 
+function Get-DSCVideos {
+
+Invoke-RestMethod -uri “https://gdata.youtube.com/feeds/api/videos?v=2&q=Desired+State+Configuration+PowerShell” |
+foreach {[PSCustomObject]@{Title=$_.Title; Author=$_.author.name; Link=$_.content.src}} | Format-List }  
+
 #Aliases 
 ."C:\scripts\setallaliases.ps1"
 
+cd $user
 clear
